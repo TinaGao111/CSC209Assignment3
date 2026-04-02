@@ -229,3 +229,21 @@ GuessResult process_guess(GameState *game, int player_id, char guess) {
         return GUESS_WRONG;
     }
 }
+
+int match_winner(const GameState *game) {
+    if (game == NULL) {
+        return -1;
+    }
+
+    if (game->round_num < game->total_rounds) {
+        return -1;
+    }
+
+    if (game->scores[0] > game->scores[1]) {
+        return 0;
+    } else if (game->scores[1] > game->scores[0]){
+        return 1;
+    } else {
+        return 255;
+    }
+}

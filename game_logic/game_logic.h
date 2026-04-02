@@ -48,4 +48,6 @@ int player_has_won(const PlayerGameState *player);
 int player_has_lost(const PlayerGameState *player);
 char normalize_guess(char c);
 
+int match_winner(const GameState *game);
+
 #endif
