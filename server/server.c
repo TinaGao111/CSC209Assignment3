@@ -355,7 +355,8 @@ static int handle_guess(ServerSession *session, int player_id, const msg_guess_t
             if (send_match_over_msg(session) != 1) {
                 return -1;
             }
-            session->match_active = 0;
+            close_client(session, 0);
+            close_client(session, 1);
             return 1;
         }
 
@@ -367,7 +368,8 @@ static int handle_guess(ServerSession *session, int player_id, const msg_guess_t
             if (send_match_over_msg(session) != 1) {
                 return -1;
             }
-            session->match_active = 0;
+            close_client(session, 0);
+            close_client(session, 1);
         }
     }
 
