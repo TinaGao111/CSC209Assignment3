@@ -171,10 +171,16 @@ RoundState update_round_state(GameState *game) {
     int p0_lost = player_has_lost(&game->players[0]);
     int p1_lost = player_has_lost(&game->players[1]);
 
+    /* If round already ended earlier, do not score it again */
+    if (game->state != ROUND_IN_PROGRESS) {
+        return game->state;
+    }
     if (p0_won) {
         game->state = ROUND_PLAYER0_WON;
+        game->scores[0]++;
     } else if (p1_won) {
         game->state = ROUND_PLAYER1_WON;
+        game->scores[1]++;
     } else if (p0_lost && p1_lost) {
         game->state = ROUND_DRAW;
     } else {
@@ -235,6 +241,16 @@ int match_winner(const GameState *game) {
         return -1;
     }
 
+    /* Number of round wins needed to clinch the match */
+    int wins_needed = game->total_rounds / 2 + 1;
+
+    if (game->scores[0] >= wins_needed) {
+        return 0;  
+    }
+    if (game->scores[1] >= wins_needed) {
+        return 1;
+    }
+    
     if (game->round_num < game->total_rounds) {
         return -1;
     }
