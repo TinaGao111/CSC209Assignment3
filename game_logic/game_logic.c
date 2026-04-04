@@ -200,6 +200,10 @@ GuessResult process_guess(GameState *game, int player_id, char guess) {
         return GUESS_INVALID;
     }
 
+    if(game->players[player_id].finished) {
+    return GUESS_INVALID;
+    }   
+
     guess = normalize_guess(guess);
     if (guess == '\0') {
         return GUESS_INVALID;
