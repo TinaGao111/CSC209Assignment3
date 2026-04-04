@@ -24,6 +24,7 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 /* ----------------------------------------------------------------
@@ -33,7 +34,11 @@
 #define MAX_NAME_LEN      20   /* max player display name */
 #define MAX_LIVES          6   /* wrong guesses before elimination */
 #define MAX_PLAYERS        2   /* two-player race */
+#ifdef PORT
+#define DEFAULT_PORT    PORT
+#else
 #define DEFAULT_PORT    4242
+#endif
 #define NUM_CATEGORIES     3   /* easy, medium, hard  */
 #define MAX_ROUNDS         5   /* max rounds in a best-of-N series */
 #define ALPHABET_SIZE     26
