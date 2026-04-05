@@ -1,10 +1,6 @@
 /*
  * protocol.h — Shared message protocol for Hangman Race
  *
- * ALL THREE TEAM MEMBERS should agree on this file before coding.
- * It defines every message type, struct layout, and constant used
- * in communication between the server and clients over TCP sockets.
- *
  * Wire format:
  *   Every message is a fixed-size struct prefixed by a 1-byte opcode.
  *   The receiver reads 1 byte to determine the message type, then
@@ -14,11 +10,6 @@
  *   | opcode |        payload bytes        |
  *   | 1 byte |   sizeof(struct) bytes      |
  *   +--------+-----------------------------+
- *
- * IMPORTANT: Because TCP is a byte stream, a single read() may return
- * fewer bytes than requested. Both server and client MUST use a
- * read-loop helper (see read_nbytes in helpers.h) to ensure the
- * full message is received before processing.
  */
 
 #ifndef PROTOCOL_H
@@ -27,9 +18,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* ----------------------------------------------------------------
- * Game constants
- * ---------------------------------------------------------------- */
+/* Game constants */
 #define MAX_WORD_LEN      32   /* max secret word length (excluding '\0') */
 #define MAX_NAME_LEN      20   /* max player display name */
 #define MAX_LIVES          6   /* wrong guesses before elimination */
@@ -43,9 +32,7 @@
 #define MAX_ROUNDS         5   /* max rounds in a best-of-N series */
 #define ALPHABET_SIZE     26
 
-/* ----------------------------------------------------------------
- * Message opcodes   (1 byte each, sent before every payload)
- * ---------------------------------------------------------------- */
+/* Message opcodes   (1 byte each, sent before every payload) */
 
 /* Client → Server */
 #define MSG_JOIN        0x01   /* player wants to join the lobby */
@@ -61,16 +48,9 @@
 #define MSG_MATCH_OVER  0x15   /* series ended: final scores */
 #define MSG_ERROR       0x1F   /* server-side error / invalid action */
 
-/* ----------------------------------------------------------------
- * Payload structs   (all fixed-width, packed for simplicity)
- *
- * NOTE: These structs are written/read with a single write()/read()
- * call (after the 1-byte opcode). No endian conversion is done —
- * this is fine because client and server run on the same machine
- * (teach.cs) or same architecture (x86-64 Linux).
- * ---------------------------------------------------------------- */
+/* Payload structs   (all fixed-width, packed for simplicity) */
 
-/* --- Client → Server ------------------------------------------- */
+/* Client → Server */
 
 /* MSG_JOIN: client sends its player name */
 typedef struct {
@@ -87,7 +67,7 @@ typedef struct {
     uint8_t accept;                /* 1 = yes, 0 = no */
 } msg_rematch_t;
 
-/* --- Server → Client ------------------------------------------- */
+/* Server → Client */
 
 /* MSG_WELCOME: confirms join, tells client its player index */
 typedef struct {
@@ -141,11 +121,11 @@ typedef struct {
     char message[64];              /* human-readable error string */
 } msg_error_t;
 
-/* ----------------------------------------------------------------
+/* 
  * Helper: message size lookup
  * Given an opcode, return the size of its payload struct.
  * Returns 0 for unknown opcodes.
- * ---------------------------------------------------------------- */
+ */
 static inline size_t payload_size(uint8_t opcode) {
     switch (opcode) {
         case MSG_JOIN:         return sizeof(msg_join_t);
